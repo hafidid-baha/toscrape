@@ -13,27 +13,23 @@ class HomeController extends Controller
 	{
 		
 		$data = [];
-		// get data from the first page
-		$crawler = Goutte::request('GET', 'http://quotes.toscrape.com');
-		// push the first line to the data array
-		$this->fetchCrawler($crawler,$data);
-		// dd($data);
-		// get data from page 2 to 10
-		foreach (range(2, 10) as $l) {
-			// change the fetched url each time to get data from the next page
-			$crawler = Goutte::request('GET', 'http://quotes.toscrape.com/page/'.$l.'/');
-			$this->fetchCrawler($crawler,$data);
-		}	
+
+		if(Quote::all()->count() > 0){
+			// start the request and intiat the crawler
+			$this->fetchDataFromSite($data);
+		}
 
 		// check first if the table is already contain some data
 		if(Quote::all()->count() == 0){
 			// add all the quotes to the quotes table
 			foreach ($data as $item) {
-				Quote::create([
+				$quote =  Quote::create([
 					'author'=>explode(';',$item)[1],
 					'tags'=>explode(';',$item)[2],
 					'quote'=>explode(';',$item)[0]
 				]);
+
+				array_push($data,$quote->quote.";".$quote->author.";".$quote->tags);
 			}
 		}
 		
@@ -73,5 +69,19 @@ class HomeController extends Controller
 		// });
 
 		// return $line;
+	}
+
+	private function fetchDataFromSite(&$data){
+		// get data from the first page
+		$crawler = Goutte::request('GET', 'http://quotes.toscrape.com');
+		// push the first line to the data array
+		$this->fetchCrawler($crawler,$data);
+		// dd($data);
+		// get data from page 2 to 10
+		foreach (range(2, 10) as $l) {
+			// change the fetched url each time to get data from the next page
+			$crawler = Goutte::request('GET', 'http://quotes.toscrape.com/page/'.$l.'/');
+			$this->fetchCrawler($crawler,$data);
+		}		
 	}
 }
