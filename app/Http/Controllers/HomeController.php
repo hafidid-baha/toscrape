@@ -54,20 +54,27 @@ class HomeController extends Controller
 
 	public function fetchCrawler($crawler,&$data){
 		$line = "";
+		$text = "";
+		$author = "";
+		$tags = "";
 		// get the quote text
-		$crawler->filter('.quote')->each(function ($node) use(&$line,&$data){
+		$crawler->filter('.quote')->each(function ($node) use(&$line,&$text,&$tags,&$author,&$data){
 
-			$node->filter(".text")->each(function($node)use(&$line){
-				$line .= $node->text().";";
+			$node->filter(".text")->each(function($node)use(&$text){
+				$text .= $node->text().";";
 			});
-			$node->filter(".author")->each(function($node)use(&$line){
-				$line .= $node->text().";";
+			$node->filter(".author")->each(function($node)use(&$author){
+				$author .= $node->text().";";
 			});
-			$node->filter(".tags .tag")->each(function($node)use(&$line){
-				$line .= $node->text().",";
+			$node->filter(".tags .tag")->each(function($node)use(&$tags){
+				$tags .= $node->text().",";
 			});
+			$line = $text.";".$author.";".$tags;
 			array_push($data,$line);
 			$line = "";
+			$text = "";
+			$tags = "";
+			$author = "";
 			
 		});
 		
