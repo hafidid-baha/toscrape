@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Quote;
 use Exception;
 use Illuminate\Http\Request;
 use Weidner\Goutte\GoutteFacade as Goutte;
@@ -24,6 +25,17 @@ class HomeController extends Controller
 			$this->fetchCrawler($crawler,$data);
 		}	
 
+		// check first if the table is already contain some data
+		if(Quote::all()->count() == 0){
+			// add all the quotes to the quotes table
+			foreach ($data as $item) {
+				Quote::create([
+					'author'=>explode(';',$item)[1],
+					'tags'=>explode(';',$item)[2],
+					'quote'=>explode(';',$item)[0]
+				]);
+			}
+		}
 		
 		return view("welcome")->with(["data"=>$data]);
 	}
