@@ -17,8 +17,8 @@
 
             <div class="content">
                 <div class="container">
-                    <div class="row">
-                        @foreach ($data as $d)                        
+                    <div class="row justify-content-center align-items-center pt-5 pb-5">
+                        {{-- @foreach ($data as $d)                        
                             <div class="col-6 mb-2">
                                 <div class="card">
                                     <div class="card-header">
@@ -31,7 +31,15 @@
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
+                        @endforeach --}}
+
+                        <div class="jumbotron shadow-sm w-100" style="background-color: #f1faee">
+                            <h1 class="display-4">{{ $quote->author }}</h1>
+                            <p class="lead">{{ $quote->quote }}</p>
+                            <hr class="my-4">
+                            <p>{{ rtrim($quote->tags,',') }}</p>
+                            <a class="btn btn-warning text-white" href="{{ route('index') }}" role="button">Shuffle</a>
+                        </div>
                     </div>
                 </div>
             </div>

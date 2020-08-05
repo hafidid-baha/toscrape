@@ -7,8 +7,11 @@ use Exception;
 use Illuminate\Http\Request;
 use Weidner\Goutte\GoutteFacade as Goutte;
 
+use function GuzzleHttp\Promise\queue;
+
 class HomeController extends Controller
 {
+
 	public function index()
 	{
 		
@@ -28,16 +31,25 @@ class HomeController extends Controller
 					'quote'=>explode(';',$item)[0]
 				]);
 				
-				array_push($data,$quote->quote.";".$quote->author.";".$quote->tags);
+				//array_push($data,$quote->quote.";".$quote->author.";".$quote->tags);
 			}
 		}else{
-			$quotes = Quote::all();
-			foreach ($quotes as $quote) {
-				array_push($data,$quote->quote.";".$quote->author.";".$quote->tags);
-			}
+			// $quotes = Quote::all();
+			// foreach ($quotes as $quote) {
+			// 	array_push($data,$quote->quote.";".$quote->author.";".$quote->tags);
+			// }
 		}
 		
-		return view("welcome")->with(["data"=>$data]);
+		$quote = $this->shuffle();
+		return view("welcome")->with(['quote'=>$quote]);
+	}
+
+	public function shuffle(){
+		// we know the the number of quotes is 100
+		$id = rand(1,100);
+		$quote = Quote::find($id);
+		// dd($id,$quote->author);
+		return $quote;
 	}
 
 	public function fetchCrawler($crawler,&$data){
