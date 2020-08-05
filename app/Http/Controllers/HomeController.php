@@ -69,7 +69,7 @@ class HomeController extends Controller
 			$node->filter(".tags .tag")->each(function($node)use(&$tags){
 				$tags .= $node->text().",";
 			});
-			$line = $text.";".$author.";".$tags;
+			$line = $text.$author.$tags;
 			array_push($data,$line);
 			$line = "";
 			$text = "";
