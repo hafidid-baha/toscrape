@@ -14,13 +14,12 @@ class HomeController extends Controller
 		
 		$data = [];
 
-		if(Quote::all()->count() > 0){
-			// start the request and intiat the crawler
-			$this->fetchDataFromSite($data);
-		}
 
 		// check first if the table is already contain some data
 		if(Quote::all()->count() == 0){
+
+			// start the request and intiat the crawler
+			$this->fetchDataFromSite($data);
 			// add all the quotes to the quotes table
 			foreach ($data as $item) {
 				$quote =  Quote::create([
@@ -28,7 +27,12 @@ class HomeController extends Controller
 					'tags'=>explode(';',$item)[2],
 					'quote'=>explode(';',$item)[0]
 				]);
-
+				
+				array_push($data,$quote->quote.";".$quote->author.";".$quote->tags);
+			}
+		}else{
+			$quotes = Quote::all();
+			foreach ($quotes as $quote) {
 				array_push($data,$quote->quote.";".$quote->author.";".$quote->tags);
 			}
 		}
